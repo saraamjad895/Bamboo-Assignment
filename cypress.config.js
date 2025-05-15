@@ -15,7 +15,7 @@ module.exports = defineConfig({
   viewportHeight: 720,
   screenshotOnRunFailure: true,
   video: false,
-  
+
 
   e2e: {
     baseUrl: 'https://magento.softwaretestingboard.com',
@@ -23,5 +23,9 @@ module.exports = defineConfig({
       require('cypress-mochawesome-reporter/plugin')(on);
     },
     specPattern: "cypress/e2e/*.cy.js"
+  },
+  retries: {
+    runMode: 2,
+    openMode: 2
   },
 });

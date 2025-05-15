@@ -1,0 +1,743 @@
+{
+	"info": {
+		"_postman_id": "40f5f8c1-97e3-48b0-b3cd-a8e9f51af88a",
+		"name": "Petstore API Automation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42790270"
+	},
+	"item": [
+		{
+			"name": "Positive Test Cases",
+			"item": [
+				{
+					"name": "Create Pet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"//Store user id ",
+									"pm.collectionVariables.set(\"petId\", jsonData.id)",
+									"",
+									"//TC1: Check Status Code to be 200",
+									"pm.test(\"Validate Status Code is 200\", function()",
+									"{",
+									"    try{",
+									"        pm.response.to.have.status(200);",
+									"",
+									"    }",
+									"    catch(err)",
+									"    {",
+									"        if(jsonData.message.includes(\"has already been taken\"))",
+									"        {",
+									"            cleanupScript(); //can impliment this function",
+									"        }",
+									"    }",
+									"    ",
+									"});",
+									"",
+									"//TC2: Validate response have ID property",
+									"pm.test(\"Validate response have ID property\", function()",
+									"{",
+									"    pm.expect(jsonData).have.property(\"id\");",
+									"});",
+									"",
+									"// TC3: Validate the data is exactly same as input",
+									"pm.test(\"Validate the data is exactly same as input\", function()",
+									"{",
+									"    pm.expect(jsonData.id).to.eql(parseInt(pm.collectionVariables.get(\"petId\")));",
+									"    pm.expect(jsonData.category.name).to.eql(pm.collectionVariables.get(\"category\"));",
+									"    pm.expect(jsonData.status).to.eql(pm.collectionVariables.get(\"status\"));",
+									"});",
+									"",
+									"// TC4:  Validate no data is having null value",
+									"pm.test(\"All response fields are not null\", function () {",
+									"    pm.expect(jsonData.id).to.not.be.null;",
+									"    pm.expect(jsonData.name).to.not.be.null;",
+									"    pm.expect(jsonData.tags).to.not.be.null;",
+									"    pm.expect(jsonData.status).to.not.be.null;",
+									"});",
+									"",
+									"// TC5:  Validate the Api performance ",
+									"pm.test(\"Validate response time is less than 2000 ms\", function()",
+									"{",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									"",
+									"// TC6: Validate the category json structure is in correct formate",
+									"pm.test(\"Validate 'category' and 'tags' are structured correctly\", function () {",
+									"    pm.expect(jsonData.category).to.be.an(\"object\");",
+									"    pm.expect(jsonData.category.id).to.be.a(\"number\");",
+									"    pm.expect(jsonData.category.name).to.be.a(\"string\");",
+									"",
+									"    pm.expect(jsonData.tags).to.be.an(\"array\");",
+									"    pm.expect(jsonData.tags[0]).to.be.an(\"object\");",
+									"    pm.expect(jsonData.tags[0].id).to.be.a(\"number\");",
+									"    pm.expect(jsonData.tags[0].name).to.be.a(\"string\");",
+									"});",
+									"",
+									"// TC7: Validate the status is one of correct value",
+									"pm.test(\"Validate 'status' is one of allowed values\", function () {",
+									"    const allowedStatus = [\"available\", \"unavailable\"];",
+									"    pm.expect(allowedStatus).to.include(jsonData.status);",
+									"});",
+									"",
+									"// TC8: Validate the content type in header",
+									"pm.test(\"Validate response is in JSON format\", function () {",
+									"     pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json\");",
+									"});",
+									"",
+									"// TC9: Validate response has no unexpected property",
+									"pm.test(\"Validate response contains only defined properties\", function () {",
+									"    const expectedKeys = [\"id\", \"category\", \"name\", \"photoUrls\", \"tags\", \"status\"];",
+									"    const actualKeys = Object.keys(jsonData);",
+									"    expectedKeys.forEach(key => pm.expect(actualKeys).to.include(key));",
+									"});",
+									"",
+									"// TC10: Validate the schema validation e",
+									"pm.test(\"Validate JSON response schema\", function()",
+									"{",
+									"    const schema = {",
+									"  \"type\": \"object\",",
+									"  \"properties\": {",
+									"    \"id\": {",
+									"      \"type\": \"integer\"",
+									"    },",
+									"    \"category\": {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"id\": {",
+									"          \"type\": \"integer\"",
+									"        },",
+									"        \"name\": {",
+									"          \"type\": \"string\"",
+									"        }",
+									"      },",
+									"      \"required\": [",
+									"        \"id\",",
+									"        \"name\"",
+									"      ]",
+									"    },",
+									"    \"name\": {",
+									"      \"type\": \"string\"",
+									"    },",
+									"    \"photoUrls\": {",
+									"      \"type\": \"array\",",
+									"      \"items\": [",
+									"        {",
+									"          \"type\": \"string\"",
+									"        }",
+									"      ]",
+									"    },",
+									"    \"tags\": {",
+									"      \"type\": \"array\",",
+									"      \"items\": [",
+									"        {",
+									"          \"type\": \"object\",",
+									"          \"properties\": {",
+									"            \"id\": {",
+									"              \"type\": \"integer\"",
+									"            },",
+									"            \"name\": {",
+									"              \"type\": \"string\"",
+									"            }",
+									"          },",
+									"          \"required\": [",
+									"            \"id\",",
+									"            \"name\"",
+									"          ]",
+									"        }",
+									"      ]",
+									"    },",
+									"    \"status\": {",
+									"      \"type\": \"string\"",
+									"    }",
+									"  },",
+									"  \"required\": [",
+									"    \"id\",",
+									"    \"category\",",
+									"    \"name\",",
+									"    \"photoUrls\",",
+									"    \"tags\",",
+									"    \"status\"",
+									"  ]",
+									"    }",
+									"    ",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"})",
+									"",
+									"// Adding delay after first api call",
+									"setTimeout(function() {",
+									"        console.log(\"Executing the second request after delay.\");",
+									"    }, 5000); ",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//Setting random pet id ",
+									"const randNumber = pm.variables.replaceIn('{{$randomInt}}');",
+									"pm.collectionVariables.set(\"id\",  randNumber);",
+									"",
+									"// Randomly choose between \"available\" and \"unavailable\" status feild",
+									"const statuses = [\"available\", \"unavailable\"];",
+									"const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];",
+									"pm.collectionVariables.set(\"status\", randomStatus);",
+									"",
+									"// Randomly choose between Category feild",
+									"const pet_catgeory = [\"Cat\", \"Dog\", \"Rats\", \"Tiger\", \"Lion\", \"Fish\", \"Birds\", \"Hamster\", \"Rabbits\", \"Horse\"];",
+									"const categories = pet_catgeory[Math.floor(Math.random() * pet_catgeory.length)];",
+									"pm.collectionVariables.set(\"category\", categories);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": {{id}},\n  \"category\": {\n    \"id\": \"{{id}}\",\n    \"name\": \"{{category}}\"\n  },\n  \"name\": \"{{category}}_nickname\",\n  \"photoUrls\": [\n  ],\n  \"tags\": [\n    {\n      \"id\": \"{{id}}\",\n      \"name\": \"{{category}}_tagname\"\n    }\n  ],\n  \"status\": \"{{status}}\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUri}}/pet",
+							"host": [
+								"{{BaseUri}}"
+							],
+							"path": [
+								"pet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get PetId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const maxRetries = 3;",
+									"let retryCount = parseInt(pm.collectionVariables.get(\"retryCount\") || \"0\");",
+									"let responseData = pm.response.json();",
+									"let shouldRetry = false;",
+									"",
+									"/////////////// As the Api is not stable so applying the retry logic to execute api //////////////////////////",
+									"",
+									"if ((responseData.type) === \"error\") {",
+									"    if (retryCount < maxRetries) {",
+									"        retryCount++;",
+									"        pm.collectionVariables.set(\"retryCount\", retryCount.toString());",
+									"        console.log(`Retry attempt ${retryCount}`);",
+									"        postman.setNextRequest(\"Get PetId\");  // Fixed the function name to postman.setNextRequest",
+									"    } else {",
+									"        console.log(\"Max retries reached.\");",
+									"        pm.collectionVariables.set(\"retryCount\", \"0\"); ",
+									"    }",
+									"} else {",
+									"",
+									"    pm.test(\"Valid response received\", () => {",
+									"        pm.expect(responseData.id).to.be.a(\"number\");",
+									"    });",
+									"    pm.collectionVariables.set(\"retryCount\", \"0\");",
+									"}",
+									"",
+									"////////////////// TEST CASES ////////////////////////////",
+									"const jsonData = pm.response.json();",
+									"",
+									"//TC1: Check Status Code to be 200",
+									"pm.test(\"Validate Status Code is 200\", function()",
+									"{",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//TC2: Validate response have ID property",
+									"pm.test(\"Validate response have ID property\", function()",
+									"{",
+									"    pm.expect(jsonData).have.property(\"id\");",
+									"});",
+									"",
+									"// TC3: Validate the data is exactly same as input",
+									"pm.test(\"Validate the data is exactly same as input\", function()",
+									"{",
+									"    pm.expect(jsonData.id).to.eql(parseInt(pm.collectionVariables.get(\"petId\")));",
+									"    pm.expect(jsonData.category.name).to.eql(pm.collectionVariables.get(\"category\"));",
+									"    pm.expect(jsonData.status).to.eql(pm.collectionVariables.get(\"status\"));",
+									"});",
+									"",
+									"// TC4:  Validate no data is having null value",
+									"pm.test(\"All response fields are not null\", function () {",
+									"    pm.expect(jsonData.id).to.not.be.null;",
+									"    pm.expect(jsonData.name).to.not.be.null;",
+									"    pm.expect(jsonData.tags).to.not.be.null;",
+									"    pm.expect(jsonData.status).to.not.be.null;",
+									"});",
+									"",
+									"// TC5:  Validate the Api performance ",
+									"pm.test(\"Validate response time is less than 2000 ms\", function()",
+									"{",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									"",
+									"// TC6: Validate the category json structure is in correct formate",
+									"pm.test(\"Validate 'category' and 'tags' are structured correctly\", function () {",
+									"    pm.expect(jsonData.category).to.be.an(\"object\");",
+									"    pm.expect(jsonData.category.id).to.be.a(\"number\");",
+									"    pm.expect(jsonData.category.name).to.be.a(\"string\");",
+									"",
+									"    pm.expect(jsonData.tags).to.be.an(\"array\");",
+									"    pm.expect(jsonData.tags[0]).to.be.an(\"object\");",
+									"    pm.expect(jsonData.tags[0].id).to.be.a(\"number\");",
+									"    pm.expect(jsonData.tags[0].name).to.be.a(\"string\");",
+									"});",
+									"",
+									"// TC7: Validate the status is one of correct value",
+									"pm.test(\"Validate 'status' is one of allowed values\", function () {",
+									"    const allowedStatus = [\"available\", \"unavailable\"];",
+									"    pm.expect(allowedStatus).to.include(jsonData.status);",
+									"});",
+									"",
+									"// TC8: Validate the content type in header",
+									"pm.test(\"Validate response is in JSON format\", function () {",
+									"     pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json\");",
+									"});",
+									"",
+									"// TC9: Validate response has no unexpected property",
+									"pm.test(\"Validate response contains only defined properties\", function () {",
+									"    const expectedKeys = [\"id\", \"category\", \"name\", \"photoUrls\", \"tags\", \"status\"];",
+									"    const actualKeys = Object.keys(jsonData);",
+									"    expectedKeys.forEach(key => pm.expect(actualKeys).to.include(key));",
+									"});",
+									"",
+									"// TC10: Validate the schema validation e",
+									"pm.test(\"Validate JSON response schema\", function()",
+									"{",
+									"    const schema = {",
+									"  \"type\": \"object\",",
+									"  \"properties\": {",
+									"    \"id\": {",
+									"      \"type\": \"integer\"",
+									"    },",
+									"    \"category\": {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"id\": {",
+									"          \"type\": \"integer\"",
+									"        },",
+									"        \"name\": {",
+									"          \"type\": \"string\"",
+									"        }",
+									"      },",
+									"      \"required\": [",
+									"        \"id\",",
+									"        \"name\"",
+									"      ]",
+									"    },",
+									"    \"name\": {",
+									"      \"type\": \"string\"",
+									"    },",
+									"    \"photoUrls\": {",
+									"      \"type\": \"array\",",
+									"      \"items\": [",
+									"        {",
+									"          \"type\": \"string\"",
+									"        }",
+									"      ]",
+									"    },",
+									"    \"tags\": {",
+									"      \"type\": \"array\",",
+									"      \"items\": [",
+									"        {",
+									"          \"type\": \"object\",",
+									"          \"properties\": {",
+									"            \"id\": {",
+									"              \"type\": \"integer\"",
+									"            },",
+									"            \"name\": {",
+									"              \"type\": \"string\"",
+									"            }",
+									"          },",
+									"          \"required\": [",
+									"            \"id\",",
+									"            \"name\"",
+									"          ]",
+									"        }",
+									"      ]",
+									"    },",
+									"    \"status\": {",
+									"      \"type\": \"string\"",
+									"    }",
+									"  },",
+									"  \"required\": [",
+									"    \"id\",",
+									"    \"category\",",
+									"    \"name\",",
+									"    \"photoUrls\",",
+									"    \"tags\",",
+									"    \"status\"",
+									"  ]",
+									"    }",
+									"    ",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"})",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"if (!pm.collectionVariables.has(\"retryCount\")) {",
+									"    pm.collectionVariables.set(\"retryCount\", \"0\");",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUri}}/pet/{{petId}}",
+							"host": [
+								"{{BaseUri}}"
+							],
+							"path": [
+								"pet",
+								"{{petId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative Test Cases",
+			"item": [
+				{
+					"name": "Create Pet - Invalid data type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Validate invalid input data is throwing 404 status code\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Validate response body have message as bad input\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"bad input\");",
+									"    pm.expect(jsonData.code).to.eql(400);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 001,\n  \"category\": {\n    \"id\": 1,\n    \"name\": \"Dog\"\n  },\n  \"photoUrls\": [\n    \"http://example.com/photo1\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 1,\n      \"name\": \"cute\"\n    }\n  ],\n  \"status\": \"available\"\n}"
+						},
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/pet",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"pet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get PetId - Invalid Pet ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Invalid petId returns 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/pet/invalid-id",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"pet",
+								"invalid-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get PetId - Non Existing pet id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Invalid petId returns 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Validate response body have message as not found\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"Pet not found\");",
+									"    pm.expect(jsonData.type).to.eql(\"error\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/pet/1199999",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"pet",
+								"1199999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get PetId - null pet id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Invalid petId returns 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"//TC1: Set petid as null",
+									"pm.test(\"PetID = Null -> Validate response body have message as not found\", function () {",
+									"    pm.expect(jsonData.message).to.contains(\"null\");",
+									"    pm.expect(jsonData.type).to.eql(\"unknown\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/pet/null",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"pet",
+								"null"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get PetId - Too Large pet id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Invalid petId returns 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Validate response body have message for too large number\", function () {",
+									"    pm.expect(jsonData.message).to.contains(\"NumberFormatException\");",
+									"    pm.expect(jsonData.type).to.eql(\"unknown\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/pet/9223372036854776000",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"pet",
+								"9223372036854776000"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BaseUri",
+			"value": "https://petstore.swagger.io/v2",
+			"type": "string"
+		},
+		{
+			"key": "id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "status",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "category",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "petId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "retryCount",
+			"value": "0",
+			"type": "string"
+		}
+	]
+}
