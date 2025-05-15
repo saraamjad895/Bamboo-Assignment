@@ -1,0 +1,25 @@
+{
+  "multiProductOrder": {
+    "products": [
+      {
+        "name": "Wayfarer Messenger Bag",
+        "quantity": 1
+      },
+      {
+        "name": "Overnight Duffle",
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "firstName": "Sara",
+      "lastName": "Amjad",
+      "email": "sara.amjad+multi@example.com",
+      "address": "123 Test Street",
+      "city": "Dubai",
+      "region": "Al Garhoud",
+      "postalCode": "1",
+      "phone": "1234567890",
+      "country": "United Arab Emirates"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "validUser": {
+    "email": "sara_amjad895@yahoo.com",
+    "password": "D4@R7fSb6nxb6Nv"
+  },
+  "validUser1": {
+    "firstName": "Sara",
+    "lastName": "Amjad",
+    "emailPrefix": "sara",
+    "password": "SecurePassword123"
+  },
+  "validUser2": {
+    "firstName": "Sara",
+    "lastName": "Amjad",
+    "emailPrefix": "Sara",
+    "password": "SecurePassword123"
+  },
+  "blankFields": {},
+  "invalidEmail": {
+    "firstName": "John",
+    "lastName": "Amjad",
+    "email": "user@.com",
+    "password": "ValidPass123",
+    "confirmPassword": "ValidPass123"
+  },
+  "shortPassword": {
+    "firstName": "John",
+    "lastName": "Amjad",
+    "email": "user@example.com",
+    "password": "short",
+    "confirmPassword": "short"
+  },
+  "mismatchedPasswords": {
+    "firstName": "John",
+    "lastName": "Amjad",
+    "emailPrefix": "sara",
+    "password": "ValidPass123",
+    "confirmPassword": "DifferentPass12345678"
+  },
+  "existingUser": {
+    "firstName": "Sara",
+    "lastName": "Amjad",
+    "email": "sara_amjad895@yahoo.com",
+    "password": "ValidPass123",
+    "confirmPassword": "ValidPass123"
+  }
+}
