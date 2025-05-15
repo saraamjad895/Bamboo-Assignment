@@ -35,3 +35,17 @@ newman run ./apiCollection/PetstoreAutomation.postman_collection.json
 
 Check the report folder for mochawesome reports
 Screenshots of failed cases under screenshot folder
+
+
+**6- Manual test cases:** 
+
+Manual test cases are stored in excel file under manualTestcases folder
+
+
+**7- Performance testing file:** 
+
+Performance testing question's answer is saved in pdf file under performanceTestingDoc folder
+
+
+
+
